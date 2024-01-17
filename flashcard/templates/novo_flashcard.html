@@ -62,13 +62,12 @@
 
             </div>
             <div class="col-md">
-                <form action="" method="GET">
+                <form action="{% url 'novo_flashcard' %}" method="GET">
                     <div class="row">
                         <div class="col-md">
                             <label for="">Categoria</label>
                             <select name="categoria" id="" class="form-select">
-                                <option value=""></option>
-                                
+                                <option value="">Todas as Categorias</option>
                             </select>
                         </div>
                         <div class="col-md">
