@@ -18,7 +18,7 @@
             <div class="col-md">
                 
                 <div class="box-form">
-                    <form action="" method="POST"> {% csrf_token %}
+                    <form action="{% url "novo_flashcard" %}" method="POST"> {% csrf_token %}
                         <h3>Novo flashcard</h3>
                         {% if messages %}
                             <br>
@@ -40,13 +40,21 @@
                                 <div class="col-md">
                                     <label for="">Categoria</label>
                                     <select class="form-select" name="categoria">
-                                        
-                                    </select>
+                                        <option value="">Todas as Categorias</option>
+                                        {% for cat in categorias %}
+                                        <p>Categoria{{ categorias }}</p>
+                                                <option class="text-dark" value="{{ cat.0 }}">{{ cat.1 }}</option>
+                                            {% endfor %}
+                                        </select>
                                 </div>
                                 <div class="col-md">
                                     <label for="">Dificuldade</label>
                                     <select class="form-select" name="dificuldade">
-                                        
+                                        <option value="">Todas as Dificuldades</option>
+                                            {% for dificuldade in dificuldades %}
+                                                <option value="{{ dificuldade.0 }}">{{ dificuldade.1 }}</option>
+                                            {% endfor %}
+                                        </select>
                                     </select>
 
                                 </div>
@@ -64,16 +72,22 @@
             <div class="col-md">
                 <form action="{% url 'novo_flashcard' %}" method="GET">
                     <div class="row">
-                        <div class="col-md">
+                        <div class="col-md text-dark">
                             <label for="">Categoria</label>
                             <select name="categoria" id="" class="form-select">
                                 <option value="">Todas as Categorias</option>
+                                {% for cat in categorias %}
+                                    <option value="{{ cat.0 }}">{{ cat.1 }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md">
                             <label for="">Dificuldade</label>
                             <select name="dificuldade" id="" class="form-select">
                                 <option value=""></option>
+                                    {% for dificuldade in dificuldades %}
+                                        <option value="{{ dificuldade.0 }}">{{ dificuldade.1 }}</option>
+                                    {% endfor %}
                             </select>
                         </div>
                         <div class="col-md">
