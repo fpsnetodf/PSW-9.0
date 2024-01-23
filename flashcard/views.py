@@ -1,11 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from .models import Categoria, Flashcard
+from .models import Categoria, Flashcard, Desafio, FlashcardDesafio
 from django.contrib.messages import add_message, constants
 # Create your views here.
 
 def novo_flashcard(request):
-    if request.method == "POST":
+    if not request.user.is_authenticated:
+        return redirect("usuarios/logar")
+    if request.method == "GET":
+        categorias = Categoria.objects.all()
+        dificuldades = Flashcard.DIFICULDADE_CHOICES
+        return render(request, 'novo_flashcard.html', {"categorias": categorias, "dificuldades": dificuldades })
+    
+    elif request.method == "POST":
         if request.user.is_authenticated:
             user = request.user
         pergunta = request.POST.get("pergunta") 
@@ -15,15 +22,27 @@ def novo_flashcard(request):
             return redirect('/flashcard/novo_flashcard/')
         categoria = request.POST.get("categoria")
         dificuldade = request.POST.get("dificuldade")
+
+    # flashcards = Flashcard.objects.all()
+    # if request.method == "POST":
+    #     if request.user.is_authenticated:
+    #         user = request.user
+    #     pergunta = request.POST.get("pergunta") 
+    #     resposta = request.POST.get("resposta")
+    #     if len(pergunta.strip()) == 0 or len(resposta.strip()) == 0:
+    #         add_message(request, constants.ERROR, "Preencha as perguntas e respostas")
+    #         return redirect('/flashcard/novo_flashcard/')
+    #     categoria = request.POST.get("categoria")
+    #     dificuldade = request.POST.get("dificuldade")
         
-        Categoria(user=user, pergunta=pergunta, resposta=resposta, categoria=categoria, dificuldade=dificuldade).save()
-        add_message(request, constants.SUCCESS, "Dados salvos com sucesso!!")
-        return HttpResponse(f"{pergunta}, {resposta}, {categoria}, {dificuldade}")
-    else:        
-        return render(
-            request,
-            'novo_flashcard.html',{"categorias":categorias, "flashcards": flashcards, "dificuldades":Flashcard.DIFICULDADE_CHOICES}
-        )
+    #     Categoria(user=user, pergunta=pergunta, resposta=resposta, categoria=categoria, dificuldade=dificuldade).save()
+    #     add_message(request, constants.SUCCESS, "Dados salvos com sucesso!!")
+    #     return HttpResponse(f"{pergunta}, {resposta}, {categoria}, {dificuldade}")
+    # else:        
+    #     return render(
+    #         request,
+    #         'novo_flashcard.html',{"categorias":categorias, "flashcards": flashcards, "dificuldades":Flashcard.DIFICULDADE_CHOICES}
+    #     )
 
     
 def deletar_flashcard(request, id):
@@ -92,3 +111,6 @@ def listar_desafio(request):
             'desafios': desafios,
         },
     )
+
+def desafio():
+    ...
