@@ -10,7 +10,15 @@ def novo_flashcard(request):
     if request.method == "GET":
         categorias = Categoria.objects.all()
         dificuldades = Flashcard.DIFICULDADE_CHOICES
-        return render(request, 'novo_flashcard.html', {"categorias": categorias, "dificuldades": dificuldades })
+        flashcards = Flashcard.objects.filter(user=request.user)
+        categoria_filtrar = request.GET.get('categoria')
+        dificuldade_filtrar = request.GET.get('dificuldade')
+        if categoria_filtrar:
+            flashcards = flashcards.filter(categoria__id=categoria_filtrar)
+        if dificuldade_filtrar:
+            flashcards = flashcards.filter(dificuldade=dificuldade_filtrar)
+            
+        return render(request, 'novo_flashcard.html', {"categorias": categorias, "dificuldades": dificuldades, "flashcards": flashcards })
     
     elif request.method == "POST":
         if request.user.is_authenticated:
@@ -22,8 +30,17 @@ def novo_flashcard(request):
             return redirect('/flashcard/novo_flashcard/')
         categoria = request.POST.get("categoria")
         dificuldade = request.POST.get("dificuldade")
-
-    # flashcards = Flashcard.objects.all()
+        return HttpResponse('teste')
+    flashcard = Flashcard(
+        user=request.user, 
+        pergunta=pergunta,
+        responsta=resposta,
+        categoria_id=categoria, 
+        dificuldade=dificuldade, 
+    )
+    flashcard.save()
+    add_message(request, constants.SUCCESS, "Flashcard cadastrado com sucesso.")
+    return redirect('/flashcard/novo_flashcard/')
     # if request.method == "POST":
     #     if request.user.is_authenticated:
     #         user = request.user
